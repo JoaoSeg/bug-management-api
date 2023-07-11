@@ -19,9 +19,9 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;
-    private PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(11);
-    }
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @Override
@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService{
         user.setFirstname(userModel.getFirstname());
         user.setLastname(userModel.getLastname());
         user.setRole("USER");
-        user.setPassword(passwordEncoder().encode(userModel.getPassword()));
+        user.setPassword(passwordEncoder.encode(userModel.getPassword()));
 
         userRepository.save(user);
         return user;
