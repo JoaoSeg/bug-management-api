@@ -7,6 +7,7 @@ import com.segolin.client.model.UserModel;
 import com.segolin.client.repository.UserRepository;
 import com.segolin.client.repository.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +19,10 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(11);
+    }
+
 
     @Override
     public User registerUser(UserModel userModel) {
@@ -28,7 +31,7 @@ public class UserServiceImpl implements UserService{
         user.setFirstname(userModel.getFirstname());
         user.setLastname(userModel.getLastname());
         user.setRole("USER");
-        user.setPassword(passwordEncoder.encode(userModel.getPassword()));
+        user.setPassword(passwordEncoder().encode(userModel.getPassword()));
 
         userRepository.save(user);
         return user;
