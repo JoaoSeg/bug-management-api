@@ -8,11 +8,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="clean-cloud-client" />
+        <module name="clean-cloud-Oauth-server" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="clean-cloud-Oauth-server" options="-parameters" />
       <module name="clean-cloud-client" options="-parameters" />
     </option>
   </component>
