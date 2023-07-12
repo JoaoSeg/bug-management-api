@@ -16,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class WebSecurityConfig {
 
-    private static final String[] WHITE_LIST_URLS = {"/hello", "/register", "/", "/verifyRegistration*", "/resendVerifyToken*"};
+    private static final String[] WHITE_LIST_URLS = {"/hello", "/register", "/", "/verifyRegistration*", "/resendVerifyToken*", "/resetPassword", "/savePassword"};
 
     @Bean
     public PasswordEncoder passwordEncoder() {
