@@ -1,18 +1,18 @@
 package com.segolin.client.service;
 
-import com.segolin.client.config.WebSecurityConfig;
+import com.segolin.client.entity.PasswordResetToken;
 import com.segolin.client.entity.User;
 import com.segolin.client.entity.VerificationToken;
 import com.segolin.client.model.UserModel;
+import com.segolin.client.repository.PasswordResetTokenRepository;
 import com.segolin.client.repository.UserRepository;
 import com.segolin.client.repository.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.cache.SpringCacheBasedUserCache;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -23,6 +23,9 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;
+
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -76,4 +79,46 @@ public class UserServiceImpl implements UserService{
         verificationTokenRepository.save(verificationToken);
         return verificationToken;
     }
+
+    @Override
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public void createPasswordResetTokenForUser(User user, String token) {
+        PasswordResetToken passwordResetToken = new PasswordResetToken(user, token);
+        passwordResetTokenRepository.save(passwordResetToken);
+    }
+
+    @Override
+    public String validatePasswordResetToken(String token) {
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token);
+
+        if (passwordResetToken == null) {
+            return "invalid";
+        }
+
+        User user = passwordResetToken.getUser();
+        Calendar calendar = Calendar.getInstance();
+
+        if ((passwordResetToken.getExpirationTime().getTime() - calendar.getTime().getTime() <= 0))  {
+            passwordResetTokenRepository.delete(passwordResetToken);
+            return "expired";
+        }
+
+        return "valid";
+    }
+
+    @Override
+    public Optional<User> getUserByPasswordResetToken(String token) {
+        return Optional.ofNullable(passwordResetTokenRepository.findByToken(token).getUser());
+    }
+
+    @Override
+    public void changePassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
 }
