@@ -8,6 +8,7 @@ import com.segolin.client.repository.PasswordResetTokenRepository;
 import com.segolin.client.repository.UserRepository;
 import com.segolin.client.repository.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -81,8 +82,14 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public User findUserByEmail(String email) throws UsernameNotFoundException {
+        User user = null;
+        try {
+            user = userRepository.findByEmail(email);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 
     @Override
