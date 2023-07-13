@@ -1,9 +1,12 @@
 package com.segolin.client.config;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,16 +18,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.security.config.Customizer.*;
+
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig {
-
-    private static final String[] WHITE_LIST_URLS = {
-            "/hello",
-            "/register",
-            "/verifyRegistration*",
-            "/resendVerifyToken"
-    };
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -34,15 +32,16 @@ public class WebSecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests((request)  -> request
-                        .requestMatchers(WHITE_LIST_URLS).permitAll()
-                        .requestMatchers("/api/**").authenticated()
-                )
-                .oauth2Login((oauth2 -> oauth2
-                        .loginPage("/oauth2/authorization/api-client-oidc")))
-                .oauth2Client(Customizer.withDefaults())
-                .cors(CorsConfigurer::disable)
-                .csrf(CsrfConfigurer::disable);
+                .authorizeHttpRequests((request)  -> {
+                    request.requestMatchers("/").permitAll();
+                    request.requestMatchers(HttpMethod.POST, "/register").permitAll();
+                    request.requestMatchers(HttpMethod.GET, "/verifyRegistration*").permitAll();
+                    request.anyRequest().authenticated();
+                })
+                .oauth2Login(withDefaults())
+                .formLogin(withDefaults())
+                .csrf(CsrfConfigurer::disable)
+                .cors(CorsConfigurer::disable);
 
         return http.build();
     }
