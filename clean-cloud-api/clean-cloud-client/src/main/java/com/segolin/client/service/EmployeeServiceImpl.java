@@ -38,7 +38,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setEmail(employeeModel.getEmail());
         employee.setFirstName(employeeModel.getFirstName());
         employee.setLastName(employeeModel.getLastName());
-        employee.setRole("USER");
+        employee.setRole(employeeModel.getRole());
         employee.setPassword(passwordEncoder.encode(employeeModel.getPassword()));
 
         employeeRepository.save(employee);
