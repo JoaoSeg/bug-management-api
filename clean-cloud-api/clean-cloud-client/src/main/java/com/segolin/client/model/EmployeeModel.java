@@ -13,6 +13,6 @@ public class EmployeeModel {
     private String lastName;
     private String email;
     private String password;
-    //TODO Create logic to check if passwords match
+    private String role;
     private String matchingPassword;
 }
