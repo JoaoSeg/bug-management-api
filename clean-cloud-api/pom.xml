@@ -16,7 +16,6 @@
 
     <modules>
         <module>clean-cloud-client</module>
-        <module>clean-cloud-Oauth-server</module>
     </modules>
 
 </project>
