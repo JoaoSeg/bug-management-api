@@ -33,9 +33,7 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
     public void onApplicationEvent(RegistrationCompleteEvent event) {
         try {
             this.confirmRegistration(event);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        } catch (UnsupportedEncodingException e) {
+        } catch (MessagingException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
     }
@@ -45,7 +43,7 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
                 + "Please click the link below to verify your registration:<br>"
                 + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
                 + "Thank you,<br>"
-                + "Your company name.";
+                + "Placeholder Company Name";
 
         Employee employee = event.getEmployee();
         String token = UUID.randomUUID().toString();
@@ -57,6 +55,7 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
+        //TODO: Change hardcoded adresses
         helper.setFrom("joaosegolin@gmail.com","Joao");
         helper.setTo("joaosegolin@gmail.com");
         helper.setSubject("Please verify your information");
