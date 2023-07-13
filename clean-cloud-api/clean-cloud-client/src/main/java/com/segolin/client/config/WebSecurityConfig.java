@@ -36,6 +36,7 @@ public class WebSecurityConfig {
                     request.requestMatchers("/").permitAll();
                     request.requestMatchers(HttpMethod.POST, "/register").permitAll();
                     request.requestMatchers(HttpMethod.GET, "/verifyRegistration*").permitAll();
+                    request.requestMatchers(HttpMethod.GET, "/secured/user").hasAnyAuthority("USER");
                     request.anyRequest().authenticated();
                 })
                 .oauth2Login(withDefaults())

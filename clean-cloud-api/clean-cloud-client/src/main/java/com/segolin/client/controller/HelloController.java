@@ -25,6 +25,9 @@ public class HelloController {
         return "Hello, secured";
     }
 
-
+    @GetMapping("/secured/user")
+    public String userPage() {
+        return "Hello, user";
+    }
 
 }
