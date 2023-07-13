@@ -1,11 +1,11 @@
 package com.segolin.client.controller;
 
-import com.segolin.client.entity.User;
+import com.segolin.client.entity.Employee;
 import com.segolin.client.entity.VerificationToken;
 import com.segolin.client.event.RegistrationCompleteEvent;
 import com.segolin.client.model.PasswordModel;
-import com.segolin.client.model.UserModel;
-import com.segolin.client.service.UserService;
+import com.segolin.client.model.EmployeeModel;
+import com.segolin.client.service.EmployeeService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,17 +20,17 @@ import java.util.UUID;
 public class RegistrationController {
 
     @Autowired
-    private UserService userService;
+    private EmployeeService employeeService;
 
     @Autowired
     private ApplicationEventPublisher publisher;
 
 
     @PostMapping("/register")
-    public String registerUser(@RequestBody UserModel userModel, final HttpServletRequest request) {
-        User user = userService.registerUser(userModel);
+    public String registerUser(@RequestBody EmployeeModel employeeModel, final HttpServletRequest request) {
+        Employee employee = employeeService.registerUser(employeeModel);
         publisher.publishEvent(new RegistrationCompleteEvent(
-                user,
+                employee,
                 applicationUrl(request)
         ));
         return "Success";
@@ -38,7 +38,7 @@ public class RegistrationController {
 
     @GetMapping("/verifyRegistration")
     public String verifyRegistration(@RequestParam("token") String token) {
-        String result = userService.validateVerificationToken(token);
+        String result = employeeService.validateVerificationToken(token);
         if (result.equalsIgnoreCase("valid")) {
             return "User verifies Successfully";
         }
@@ -47,34 +47,34 @@ public class RegistrationController {
 
     @GetMapping("/resendVerifyToken")
     public String resendVerificationToken(@RequestParam("token") String oldToken, HttpServletRequest request) {
-        VerificationToken verificationToken = userService.generateNewVerificationToken(oldToken);
-        User user = verificationToken.getUser();
-        resendVerificationToken(user, applicationUrl(request), verificationToken);
+        VerificationToken verificationToken = employeeService.generateNewVerificationToken(oldToken);
+        Employee employee = verificationToken.getEmployee();
+        resendVerificationToken(employee, applicationUrl(request), verificationToken);
         return "Verification link sent";
     }
 
     @PostMapping("/resetPassword")
     public String resetPassword(@RequestBody PasswordModel passwordModel, HttpServletRequest request) {
-        User user = userService.findUserByEmail(passwordModel.getEmail());
+        Employee employee = employeeService.findUserByEmail(passwordModel.getEmail());
         String url = "";
-        if (user != null) {
+        if (employee != null) {
             String token = UUID.randomUUID().toString();
-            userService.createPasswordResetTokenForUser(user, token);
-            url = passwordResetTokenEmail(user, applicationUrl(request), token);
+            employeeService.createPasswordResetTokenForUser(employee, token);
+            url = passwordResetTokenEmail(employee, applicationUrl(request), token);
         }
         return url;
     }
 
     @PostMapping("/savePassword")
     public String savePassword(@RequestParam("token") String token, @RequestBody PasswordModel passwordModel) {
-        String result = userService.validatePasswordResetToken(token);
+        String result = employeeService.validatePasswordResetToken(token);
         if (!result.equalsIgnoreCase("valid")) {
             return "Invalid Token";
         }
 
-        Optional<User> user = userService.getUserByPasswordResetToken(token);
+        Optional<Employee> user = employeeService.getUserByPasswordResetToken(token);
         if (user.isPresent()) {
-            userService.changePassword(user.get(), passwordModel.getNewPassword());
+            employeeService.changePassword(user.get(), passwordModel.getNewPassword());
             return "Password Reset Successfully";
         } else {
             return "Invalid Token";
@@ -84,22 +84,22 @@ public class RegistrationController {
 
     @PostMapping("/changePassword")
     public String changePassword(@RequestBody PasswordModel passwordModel) {
-        User user = userService.findUserByEmail(passwordModel.getEmail());
-        if (!userService.checkIfValidOldPassword(user, passwordModel.getOldPassword())) {
+        Employee employee = employeeService.findUserByEmail(passwordModel.getEmail());
+        if (!employeeService.checkIfValidOldPassword(employee, passwordModel.getOldPassword())) {
             return "Invalid old password";
         }
 
-        userService.changePassword(user, passwordModel.getNewPassword());
+        employeeService.changePassword(employee, passwordModel.getNewPassword());
         return "Password changed Successfully";
     }
 
-    private String passwordResetTokenEmail(User user, String applicationUrl, String token) {
+    private String passwordResetTokenEmail(Employee employee, String applicationUrl, String token) {
         String url = applicationUrl + "/savePassword?token=" + token;
         log.info("Click the link to reset your password: {}", url);
         return url;
     }
 
-    private void resendVerificationToken(User user, String applicationUrl, VerificationToken verificationToken) {
+    private void resendVerificationToken(Employee employee, String applicationUrl, VerificationToken verificationToken) {
         String url = applicationUrl + "/resendVerifyToken?token=" + verificationToken.getToken();
         log.info("Click the link to verify your account: {}", url);
     }
