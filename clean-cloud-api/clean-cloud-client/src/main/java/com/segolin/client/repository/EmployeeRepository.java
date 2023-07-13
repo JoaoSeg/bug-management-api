@@ -1,10 +1,10 @@
 package com.segolin.client.repository;
 
-import com.segolin.client.entity.User;
+import com.segolin.client.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-    User findByEmail(String email);
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+    Employee findByEmail(String email);
 }

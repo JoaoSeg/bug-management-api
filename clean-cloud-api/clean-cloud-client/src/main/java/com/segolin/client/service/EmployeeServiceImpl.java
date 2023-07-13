@@ -5,7 +5,7 @@ import com.segolin.client.entity.Employee;
 import com.segolin.client.entity.VerificationToken;
 import com.segolin.client.model.EmployeeModel;
 import com.segolin.client.repository.PasswordResetTokenRepository;
-import com.segolin.client.repository.UserRepository;
+import com.segolin.client.repository.EmployeeRepository;
 import com.segolin.client.repository.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,7 +20,7 @@ import java.util.UUID;
 public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
-    private UserRepository userRepository;
+    private EmployeeRepository employeeRepository;
 
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;
@@ -41,7 +41,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setRole("USER");
         employee.setPassword(passwordEncoder.encode(employeeModel.getPassword()));
 
-        userRepository.save(employee);
+        employeeRepository.save(employee);
         return employee;
     }
 
@@ -69,7 +69,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         employee.setEnabled(true);
-        userRepository.save(employee);
+        employeeRepository.save(employee);
         return "valid";
     }
 
@@ -83,11 +83,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee findUserByEmail(String email) throws UsernameNotFoundException {
-        if (userRepository.findByEmail(email) == null) {
+        if (employeeRepository.findByEmail(email) == null) {
             throw new UsernameNotFoundException("Email not found");
         }
 
-        return userRepository.findByEmail(email);
+        return employeeRepository.findByEmail(email);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void changePassword(Employee employee, String newPassword) {
         employee.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(employee);
+        employeeRepository.save(employee);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.segolin.client.service;
 
 import com.segolin.client.entity.Employee;
-import com.segolin.client.repository.UserRepository;
+import com.segolin.client.repository.EmployeeRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,14 +21,14 @@ import java.util.List;
 public class CustomEmployeeDetailsService implements UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository;
+    private EmployeeRepository employeeRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Employee employee = userRepository.findByEmail(email);
+        Employee employee = employeeRepository.findByEmail(email);
         if (employee == null) {
             throw new UsernameNotFoundException("No user found");
         }
