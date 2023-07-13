@@ -25,15 +25,15 @@ public class PasswordResetToken {
     private Date expirationTime;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id",
+    @JoinColumn(name = "employee_id",
             nullable = false,
-            foreignKey = @ForeignKey(name = "FK_USER_PASSWORD_TOKEN"))
-    private User user;
+            foreignKey = @ForeignKey(name = "FK_EMPLOYEE_PASSWORD_TOKEN"))
+    private Employee employee;
 
-    public PasswordResetToken(User user, String token) {
+    public PasswordResetToken(Employee employee, String token) {
         super();
         this.token = token;
-        this.user = user;
+        this.employee = employee;
         this.expirationTime = calculateExpirationDate(EXPIRATION_TIME);
     }
 

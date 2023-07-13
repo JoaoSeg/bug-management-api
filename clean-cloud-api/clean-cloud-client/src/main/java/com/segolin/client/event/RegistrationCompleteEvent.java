@@ -1,6 +1,6 @@
 package com.segolin.client.event;
 
-import com.segolin.client.entity.User;
+import com.segolin.client.entity.Employee;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
@@ -9,12 +9,12 @@ import org.springframework.context.ApplicationEvent;
 @Setter
 public class RegistrationCompleteEvent extends ApplicationEvent {
 
-    private User user;
+    private Employee employee;
     private String applicationUrl;
 
-    public RegistrationCompleteEvent(User user, String applicationUrl) {
-        super(user);
-        this.user = user;
+    public RegistrationCompleteEvent(Employee employee, String applicationUrl) {
+        super(employee);
+        this.employee = employee;
         this.applicationUrl = applicationUrl;
     }
 
