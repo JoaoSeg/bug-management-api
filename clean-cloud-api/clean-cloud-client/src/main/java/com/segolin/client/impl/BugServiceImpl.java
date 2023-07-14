@@ -30,36 +30,45 @@ public class BugServiceImpl implements BugService {
         Bug bug = new Bug();
         bug.setTitle(bugModel.getTitle());
         bug.setDescription(bugModel.getDescription());
-        bug.setCreation(bugModel.getCreation());
-        bug.setStatus(bugModel.getStatus());
+        bug.setCreation(Timestamp.from(Instant.now()));
+        bug.setStatus("reported");
 
         bugRepository.save(bug);
         return bug;
     }
 
     @Override
-    public void updateBug(BugModel bugModel, Long id) throws UsernameNotFoundException {
+    public String updateBug(BugModel bugModel, Long id) throws UsernameNotFoundException {
         if (bugRepository.findById(id).isEmpty()) {
             throw new UsernameNotFoundException("Bug not found");
         }
 
+        Bug tempBug = bugRepository.findById(id).get();
+
+        if (tempBug.getStatus().equalsIgnoreCase("analyze")) {
+            return "Bug is still in analyze";
+        }
+
         Bug bug = new Bug();
+        bug.setId(id);
         bug.setTitle(bugModel.getTitle());
         bug.setDescription(bugModel.getDescription());
-        bug.setCreation(bugModel.getCreation());
-        bug.setStatus(bugModel.getStatus());
         bug.setLastUpdate(Timestamp.from(Instant.now()));
+        bug.setStatus(tempBug.getStatus());
+        bug.setCreation(tempBug.getCreation());
 
         bugRepository.save(bug);
+
+        return "Bug edited successfully";
     }
 
     @Override
     public void deleteBug(Long id) {
-        if (bugRepository.findById(id).isPresent()) {
-            bugRepository.deleteById(id);
-        } else {
+        if (bugRepository.findById(id).isEmpty()) {
             throw new UsernameNotFoundException("Bug not found");
         }
+
+        bugRepository.deleteById(id);
     }
 
     @Override
@@ -104,7 +113,10 @@ public class BugServiceImpl implements BugService {
 
     @Override
     public String generateDash(String status, Timestamp period) {
-        return ;
+
+        List<Bug> bugList = bugRepository.findAllByStatusAndCreation(status, period);
+
+        return Arrays.deepToString(bugList.toArray());
     }
 
 }
