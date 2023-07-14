@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 public interface BugService {
     Bug registerBug(BugModel bugModel);
 
-    void updateBug(BugModel bugModel, Long id);
+    String updateBug(BugModel bugModel, Long id);
 
     void deleteBug(Long id);
 
