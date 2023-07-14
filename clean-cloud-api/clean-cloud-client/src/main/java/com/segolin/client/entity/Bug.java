@@ -18,4 +18,9 @@ public class Bug {
     private Timestamp creation;
     private Timestamp lastUpdate;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "employee_id",
+            foreignKey = @ForeignKey(name = "FK_EMPLOYEE_BUG"))
+    private Employee employee;
+
 }
