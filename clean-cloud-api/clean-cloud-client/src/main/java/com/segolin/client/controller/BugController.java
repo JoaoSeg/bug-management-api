@@ -2,10 +2,13 @@ package com.segolin.client.controller;
 
 import com.segolin.client.model.BugModel;
 import com.segolin.client.service.BugService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.sql.Timestamp;
 
 @RestController
@@ -37,18 +40,18 @@ public class BugController {
     }
 
     @GetMapping("/api/bug/developer")
-    public String bug(@RequestParam("id") Long id) {
-        return bugService.listBug(id);
+    public String bug(@RequestParam("id") Long id, Authentication authentication) {
+        return bugService.listBug(id, authentication);
     }
 
     @PutMapping("/api/bug/developer")
-    public String alterBugStatus(@RequestParam("id")  Long id, @RequestParam("status") String status) {
-        return bugService.alterBugStatus(id, status);
+    public String alterBugStatus(@RequestParam("id")  Long id, @RequestParam("status") String status, Authentication authentication) {
+        return bugService.alterBugStatus(id, status, authentication);
     }
 
     @GetMapping("/api/bug/manager")
-    public String showBugDash(@RequestParam("status") String status, @RequestParam("period") Timestamp period) {
-        return bugService.generateDash(status, period);
+    public String showBugDash(@RequestParam("status") String status, @RequestParam("beginperiod") Timestamp beginPeriod, @RequestParam("endperiod") Timestamp endPeriod) {
+        return bugService.generateDash(status, beginPeriod, endPeriod);
     }
 
 }
