@@ -8,9 +8,11 @@ import com.segolin.client.repository.BugRepository;
 import com.segolin.client.repository.EmployeeRepository;
 import com.segolin.client.service.BugService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Arrays;
@@ -78,26 +80,30 @@ public class BugServiceImpl implements BugService {
     }
 
     @Override
-    public String listBug(Long id) {
+    public String listBug(Long id, Authentication authentication) {
         if (bugRepository.findById(id).isEmpty()) {
             throw new UsernameNotFoundException("Bug not found");
         }
+        Employee employee = employeeRepository.findByEmail(authentication.getName());
         Bug bug = bugRepository.findById(id).get();
-        Employee employee = bug.getEmployee();
+        bug.setEmployee(employee);
+        bug.setLastUpdate(Timestamp.from(Instant.now()));
+        bug.setStatus("analyze");
 
-        employeeRepository.save(employee);
+        bugRepository.save(bug);
+
         return bug.toString();
     }
 
     @Override
-    public String alterBugStatus(Long id, String status) {
+    public String alterBugStatus(Long id, String status, Authentication authentication) {
         if (bugRepository.findById(id).isEmpty()) {
             throw new UsernameNotFoundException("Bug not found");
         }
 
         Bug bug = bugRepository.findById(id).get();
 
-        if(bug.getEmployee() != null) {
+        if(bug.getEmployee() != null && !bug.getEmployee().getEmail().equalsIgnoreCase(authentication.getName())) {
             return "Bug is already being fixed by " + bug.getEmployee().getFirstName();
         }
 
@@ -105,6 +111,7 @@ public class BugServiceImpl implements BugService {
             return "Bug status must follow flow";
         }
 
+        bug.setLastUpdate(Timestamp.from(Instant.now()));
         bug.setStatus(status);
         bugRepository.save(bug);
 
@@ -112,9 +119,9 @@ public class BugServiceImpl implements BugService {
     }
 
     @Override
-    public String generateDash(String status, Timestamp period) {
+    public String generateDash(String status, Timestamp beginPeriod, Timestamp endPeriod) {
 
-        List<Bug> bugList = bugRepository.findAllByStatusAndCreation(status, period);
+        List<Bug> bugList = bugRepository.findAllByStatusAndCreationBetween(status, beginPeriod, endPeriod);
 
         return Arrays.deepToString(bugList.toArray());
     }

@@ -2,6 +2,7 @@ package com.segolin.client.service;
 
 import com.segolin.client.entity.Bug;
 import com.segolin.client.model.BugModel;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -16,9 +17,9 @@ public interface BugService {
 
     String listReportedBugs();
 
-    String listBug(Long id);
+    String listBug(Long id, Authentication authentication);
 
-    String alterBugStatus(Long id, String status);
+    String alterBugStatus(Long id, String status, Authentication authentication);
 
-    String generateDash(String status, Timestamp period);
+    String generateDash(String status, Timestamp beginPeriod, Timestamp endPeriod);
 }

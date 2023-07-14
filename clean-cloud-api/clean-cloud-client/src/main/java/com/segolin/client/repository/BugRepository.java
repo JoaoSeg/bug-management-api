@@ -9,5 +9,5 @@ import java.util.List;
 public interface BugRepository extends JpaRepository<Bug, Long> {
     List<Bug> findAllByStatus(String reported);
 
-    List<Bug> findAllByStatusAndCreation(String status, Timestamp period);
+    List<Bug> findAllByStatusAndCreationBetween(String status, Timestamp beginPeriod, Timestamp endPeriod);
 }
