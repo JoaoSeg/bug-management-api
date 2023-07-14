@@ -1,4 +1,4 @@
-package com.segolin.client.service;
+package com.segolin.client.impl;
 
 import com.segolin.client.entity.PasswordResetToken;
 import com.segolin.client.entity.Employee;
@@ -7,6 +7,7 @@ import com.segolin.client.model.EmployeeModel;
 import com.segolin.client.repository.PasswordResetTokenRepository;
 import com.segolin.client.repository.EmployeeRepository;
 import com.segolin.client.repository.VerificationTokenRepository;
+import com.segolin.client.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
