@@ -15,43 +15,38 @@ public class BugController {
     @Autowired
     private BugService bugService;
 
-    @PostMapping("/api/bug")
+    @PostMapping("/api/bug/tester")
     public String issue(@RequestBody BugModel bugModel) {
-        bugService.registerBug(bugModel);
-        return "Bug issued succesfully";
+        return bugService.registerBug(bugModel).toString();
     }
 
-    @PutMapping("/api/bug")
+    @PutMapping("/api/bug/tester")
     public String update(@RequestBody BugModel bugModel, @RequestParam("id") Long id) {
-        if (bugModel.getStatus().equalsIgnoreCase("analyze")) {
-            return "Bug is still in analyze";
-        }
-        bugService.updateBug(bugModel, id);
-        return "Bug updated succesfully";
+        return bugService.updateBug(bugModel, id);
     }
 
-    @DeleteMapping("/api/bug")
+    @DeleteMapping("/api/bug/tester")
     public String delete(@RequestParam("id") Long id) {
         bugService.deleteBug(id);
         return "Bug deleted";
     }
 
-    @GetMapping("/api/bug")
+    @GetMapping("/api/bug/developer/listbugs")
     public String list() {
         return bugService.listReportedBugs();
     }
 
-    @GetMapping("/api/bug")
+    @GetMapping("/api/bug/developer")
     public String bug(@RequestParam("id") Long id) {
         return bugService.listBug(id);
     }
 
-    @PutMapping("/api/bug/resolve")
+    @PutMapping("/api/bug/developer")
     public String alterBugStatus(@RequestParam("id")  Long id, @RequestParam("status") String status) {
         return bugService.alterBugStatus(id, status);
     }
 
-    @GetMapping("/api/bug/dashboard")
+    @GetMapping("/api/bug/manager")
     public String showBugDash(@RequestParam("status") String status, @RequestParam("period") Timestamp period) {
         return bugService.generateDash(status, period);
     }
