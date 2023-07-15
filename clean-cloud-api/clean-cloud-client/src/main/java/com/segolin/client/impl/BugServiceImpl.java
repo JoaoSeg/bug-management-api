@@ -1,8 +1,8 @@
 package com.segolin.client.impl;
 
+import com.nimbusds.jose.shaded.gson.Gson;
 import com.segolin.client.entity.Bug;
 import com.segolin.client.entity.Employee;
-import com.segolin.client.entity.VerificationToken;
 import com.segolin.client.model.BugModel;
 import com.segolin.client.repository.BugRepository;
 import com.segolin.client.repository.EmployeeRepository;
@@ -12,7 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Arrays;
@@ -28,7 +27,8 @@ public class BugServiceImpl implements BugService {
     public EmployeeRepository employeeRepository;
 
     @Override
-    public Bug registerBug(BugModel bugModel) {
+    public String registerBug(BugModel bugModel) {
+        Gson gson = new Gson();
         Bug bug = new Bug();
         bug.setTitle(bugModel.getTitle());
         bug.setDescription(bugModel.getDescription());
@@ -36,7 +36,8 @@ public class BugServiceImpl implements BugService {
         bug.setStatus("reported");
 
         bugRepository.save(bug);
-        return bug;
+
+        return gson.toJson(bug);
     }
 
     @Override
@@ -76,7 +77,8 @@ public class BugServiceImpl implements BugService {
     @Override
     public String listReportedBugs() {
         List<Bug> bugs = bugRepository.findAllByStatus("reported");
-        return Arrays.deepToString(bugs.toArray());
+        Gson gson = new Gson();
+        return gson.toJson(bugs);
     }
 
     @Override
@@ -91,8 +93,8 @@ public class BugServiceImpl implements BugService {
         bug.setStatus("analyze");
 
         bugRepository.save(bug);
-
-        return bug.toString();
+        Gson gson = new Gson();
+        return gson.toJson(bug);
     }
 
     @Override
@@ -123,7 +125,9 @@ public class BugServiceImpl implements BugService {
 
         List<Bug> bugList = bugRepository.findAllByStatusAndCreationBetween(status, beginPeriod, endPeriod);
 
-        return Arrays.deepToString(bugList.toArray());
+        Gson gson = new Gson();
+
+        return gson.toJson(bugList);
     }
 
 }

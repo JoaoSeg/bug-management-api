@@ -17,8 +17,8 @@ public class EmailConfig {
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(25);
         //TODO Hide credentials on config file
-        mailSender.setUsername("joaosegolin@gmail.com");
-        mailSender.setPassword("eocbwatiqdvgganc");
+        mailSender.setUsername("");
+        mailSender.setPassword("");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

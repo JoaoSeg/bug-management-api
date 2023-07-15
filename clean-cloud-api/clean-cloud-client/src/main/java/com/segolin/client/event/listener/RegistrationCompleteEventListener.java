@@ -52,19 +52,19 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
         String confirmationUrl
                 = event.getApplicationUrl() + "/verifyRegistration?token=" + token;
 
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
+//        MimeMessage message = mailSender.createMimeMessage();
+//        MimeMessageHelper helper = new MimeMessageHelper(message);
 
         //TODO: Change hardcoded adresses
-        helper.setFrom("joaosegolin@gmail.com","Joao");
-        helper.setTo("joaosegolin@gmail.com");
-        helper.setSubject("Please verify your information");
+//        helper.setFrom("joaosegolin@gmail.com","Joao");
+//        helper.setTo("joaosegolin@gmail.com");
+//        helper.setSubject("Please verify your information");
         content = content.replace("[[name]]", employee.getFirstName()).replace("[[URL]]", confirmationUrl);
 
-        helper.setText(content, true);
+//        helper.setText(content, true);
+//
+//        mailSender.send(message);
 
-        mailSender.send(message);
-
-
+        System.out.println(content);
     }
 }

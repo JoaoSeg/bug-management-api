@@ -20,7 +20,7 @@ public class BugController {
 
     @PostMapping("/api/bug/tester")
     public String issue(@RequestBody BugModel bugModel) {
-        return bugService.registerBug(bugModel).toString();
+        return bugService.registerBug(bugModel);
     }
 
     @PutMapping("/api/bug/tester")
@@ -50,7 +50,7 @@ public class BugController {
     }
 
     @GetMapping("/api/bug/manager")
-    public String showBugDash(@RequestParam("status") String status, @RequestParam("beginperiod") Timestamp beginPeriod, @RequestParam("endperiod") Timestamp endPeriod) {
+    public String showBugDash(@RequestParam("status") String status, @RequestParam("begin") Timestamp beginPeriod, @RequestParam("end") Timestamp endPeriod) {
         return bugService.generateDash(status, beginPeriod, endPeriod);
     }
 
