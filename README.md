@@ -1,21 +1,20 @@
 
-# Clean Cloud API
+# Bug Management System
 
-This is a candidate test project made to mock a the cycle of discovering of bugs by Testers and fixing of bugs by Developers all under the surveilance of a Manager.
-
+This project was made to showcase the use of a bug management system to aid with the QA  working cycle of documenting and managing of bugs.
 
 ## Installing
 
 Clone github project from repo
 
 ```bash
-  git clone https://github.com/JoaoSeg/cleancloudapi.git
+  git clone https://github.com/JoaoSeg/bug-management-api.git
 ```
 Import the requests collection included in the project files into Postman
 
 Open project on IDE, install PostgreSQL set datasource credentials, user and pass in application.yml located at the resources dir, name database registration.
 
-Run CleanCloudClientApplication
+Run the application
     
 ## Testing requirements
 
